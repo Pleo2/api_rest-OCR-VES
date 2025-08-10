@@ -1,0 +1,35 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "material-icon-theme.activeIconPack": "nest",
+  "material-icon-theme.files.associations": {
+    "*.*.ts": "nestjs"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always",
+    "source.fixAll.eslint": "always"
+  },
+  "eslint.validate": ["typescript", "javascript"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "files.exclude": {
+    "**/dist": true,
+    "**/coverage": true
+  },
+  "search.exclude": {
+    "**/dist": true,
+    "**/coverage": true
+  },
+  "files.watcherExclude": {
+    "**/dist/**": true,
+    "**/coverage/**": true
+  },
+  "npm.packageManager": "pnpm",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "$(basename).spec.ts, $(basename).test.ts, $(basename).e2e-spec.ts, $(basename).mock.ts, $(basename).types.ts, $(basename).dto.ts"
+  },
+  "jest.jestCommandLine": "pnpm test --",
+  "jest.autoRun": "watch"
+}
