@@ -4,6 +4,7 @@
   "material-icon-theme.files.associations": {
     "*.*.ts": "nestjs"
   },
+  "debug.node.autoAttach": "on",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
@@ -28,8 +29,40 @@
   "npm.packageManager": "pnpm",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "*.ts": "$(basename).spec.ts, $(basename).test.ts, $(basename).e2e-spec.ts, $(basename).mock.ts, $(basename).types.ts, $(basename).dto.ts"
+    "*.ts": "$(basename).spec.ts, $(basename).test.ts, $(basename).e2e-spec.ts, $(basename).mock.ts, $(basename).types.ts, $(basename).dto.ts",
+    "*.module.ts": "$(basename).controller.ts, $(basename).service.ts, $(basename).resolver.ts, $(basename).gateway.ts, $(basename).guard.ts, $(basename).interceptor.ts, $(basename).pipe.ts, $(basename).filter.ts, $(basename).strategy.ts, $(basename).dto.ts, $(basename).entity.ts, $(basename).schema.ts, $(basename).repository.ts, $(basename).factory.ts, $(basename).spec.ts, $(basename).e2e-spec.ts, $(basename).mock.ts",
+    "*.controller.ts": "$(basename).dto.ts, $(basename).types.ts, $(basename).mock.ts, $(basename).spec.ts, $(basename).e2e-spec.ts",
+    "*.service.ts": "$(basename).types.ts, $(basename).mock.ts, $(basename).spec.ts",
+    "*.resolver.ts": "$(basename).dto.ts, $(basename).types.ts, $(basename).spec.ts",
+    "*.gateway.ts": "$(basename).types.ts, $(basename).spec.ts",
+    "*.guard.ts": "$(basename).spec.ts",
+    "*.interceptor.ts": "$(basename).spec.ts",
+    "*.pipe.ts": "$(basename).spec.ts",
+    "*.filter.ts": "$(basename).spec.ts",
+    "*.strategy.ts": "$(basename).spec.ts",
+    "*.entity.ts": "$(basename).factory.ts, $(basename).spec.ts",
+    "*.schema.ts": "$(basename).spec.ts",
+    "*.repository.ts": "$(basename).spec.ts"
   },
   "jest.jestCommandLine": "pnpm test --",
-  "jest.autoRun": "watch"
+  "jest.autoRun": "watch",
+  "files.associations": {
+    ".env": "dotenv",
+    ".env.*": "dotenv",
+    "*.http": "http"
+  },
+  "cSpell.words": [
+    "nestjs",
+    "decorator",
+    "providers",
+    "guards",
+    "interceptors",
+    "dto",
+    "e2e",
+    "typeorm",
+    "resolver",
+    "gateway",
+    "schema",
+    "repository"
+  ]
 }

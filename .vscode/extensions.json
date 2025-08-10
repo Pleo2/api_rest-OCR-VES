@@ -1,0 +1,19 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "pkief.material-icon-theme",
+    "Orta.vscode-jest",
+    "firsttris.vscode-jest-runner",
+    "nidu.copy-json-path",
+    "humao.rest-client",
+    "streetsidesoftware.code-spell-checker",
+    "mikestead.dotenv",
+    "rangav.vscode-thunder-client",
+    "sleistner.vscode-fileutils",
+    "eamodio.gitlens",
+    "editorconfig.editorconfig",
+    "christian-kohler.path-intellisense",
+    "usernamehw.errorlens"
+  ]
+}
