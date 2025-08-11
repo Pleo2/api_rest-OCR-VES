@@ -1,98 +1,110 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+## OCR VES API (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API para extraer montos en bolívares desde imágenes (OCR con IA) y convertirlos según tasas públicas. Basado en NestJS + Fastify.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### Objetivo
 
-## Description
+- OCR del monto VES desde un hablador de precio usando un modelo de IA
+- Conversión del monto según tasas públicas (p. ej. BCV, EUR, ETC)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Referencias:
 
-## Project setup
+- Tasas: https://pydolarve.org/
+- OCR (modelo): http://replicate.com/abiruyt/text-extract-ocr
+
+## Requisitos
+
+- Node.js 18+
+- pnpm 8+
+
+## Instalación
 
 ```bash
-$ pnpm install
+pnpm install
 ```
 
-## Compile and run the project
+## Variables de entorno (ejemplo)
+
+Crear un archivo `.env` en la raíz:
+
+```ini
+# App
+PORT=3000
+NODE_ENV=development
+LOG_LEVEL=debug
+
+# Tasas (pydolarve)
+PYDOLARVE_BASE_URL=https://pydolarve.org
+PYDOLARVE_TIMEOUT_MS=8000
+RATES_TTL_SECONDS=60
+
+# OCR (Replicate)
+REPLICATE_API_TOKEN=your-token
+REPLICATE_MODEL=abiruyt/text-extract-ocr
+REPLICATE_TIMEOUT_MS=15000
+
+# CORS / Body / Multipart
+CORS_ORIGINS=*
+CORS_CREDENTIALS=false
+JSON_BODY_LIMIT_MB=1
+MULTIPART_MAX_FILE_SIZE_MB=5
+MULTIPART_MAX_FILES=1
+ACCEPTED_IMAGE_MIME_TYPES=image/jpeg,image/png,image/webp
+```
+
+## Ejecutar
 
 ```bash
-# development
-$ pnpm run start
+# desarrollo
+pnpm start:dev
 
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+# producción
+pnpm build && pnpm start:prod
 ```
 
-## Run tests
+## Scripts útiles
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+pnpm format           # Prettier
+pnpm lint             # ESLint
+pnpm test             # Unit tests
+pnpm test:e2e         # E2E tests
 ```
 
-## Deployment
+## Endpoints base
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- `/` → Hello World (seed)
+- `/docs` → Swagger UI (solo en no-producción)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Arquitectura (resumen)
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+- `src/config/` configuración de CORS, body, multipart, logger y providers (p. ej. rates, replicate)
+- `src/http/` módulo HTTP reutilizable
+  - `axios.factory.ts` crea clientes Axios con timeouts, keep‑alive, retries, user‑agent
+  - `axios.telemetry.ts` interceptores (latencia, errores, x-request-id)
+  - `tokens.ts` tokens DI por cliente (p. ej. `RATES_AXIOS`)
+  - `http.module.ts` publica clientes HTTP como providers
+- `src/observability/` métricas Prometheus (latencias/errores HTTP salientes)
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Seguridad y DX
 
-## Resources
+- Validación global con `ValidationPipe` (whitelist, transform)
+- CORS configurable por env; Helmet activo
+- Logger `nestjs-pino` con `x-request-id` y pretty en dev
+- VS Code listo: ver `docs/vscode-nestjs.md`
 
-Check out a few resources that may come in handy when working with NestJS:
+## Flujo de integración (típico)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+1. El módulo `HttpModule` crea un cliente Axios para tasas (`RATES_AXIOS`) leyendo `rates.config`.
+2. El servicio de dominio (p. ej. `RatesService`) inyecta `RATES_AXIOS` y consume la API externa.
+3. Los interceptores de Axios agregan métricas y `x-request-id`.
+4. El controlador expone endpoints y (opcional) Swagger documenta los DTOs.
 
-## Support
+## Documentación adicional
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Plan del proyecto: `docs/plan/plan-ocr-ves.md`
+- Configuración de VS Code: `docs/vscode-nestjs.md`
 
-## Stay in touch
+## Licencia
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT
