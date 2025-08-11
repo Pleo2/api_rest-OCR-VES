@@ -11,6 +11,8 @@ import fastifyMultipart from '@fastify/multipart';
 import { buildcorsOption } from './config/cors.config';
 import { getJsonBodyLimit } from './config/body.config';
 import { buildMultipartOptions } from './config/multipart.config';
+import { SwaggerModule, DocumentBuilder} from '@nestjs/swagger';
+
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -18,8 +20,26 @@ async function bootstrap() {
     // Use FastifyAdapter for better performance
     // You can also pass options to FastifyAdapter if needed
     // For example, you can set a custom body limit
-    new FastifyAdapter({ logger: true, bodyLimit: getJsonBodyLimit()}),
+    new FastifyAdapter({ logger: true, bodyLimit: getJsonBodyLimit() }),
   );
+
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('OCR VES API')
+      .setDescription('API para OCR de montos en VES y conversión con tasas')
+      .setVersion('1.0.0')
+      .addTag('rates')
+      .addTag('ocr')
+      .addTag('conversion')
+      // .addBearerAuth() // si luego añades auth
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+
+    SwaggerModule.setup('/docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    });
+  }
 
   await app.register(helmet, {
     // Enable helmet for security headers
