@@ -17,8 +17,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     // Use FastifyAdapter for better performance
-    // You can also pass options to FastifyAdapter if needed
-    // For example, you can set a custom body limit
     new FastifyAdapter({ logger: false, bodyLimit: getJsonBodyLimit() }),
   );
 
@@ -33,8 +31,10 @@ async function bootstrap() {
       // .addBearerAuth() // si luego añades auth
       .build();
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const document = SwaggerModule.createDocument(app as any, config);
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     SwaggerModule.setup('/docs', app as any, document, {
       swaggerOptions: { persistAuthorization: true },
     });
@@ -49,8 +49,6 @@ async function bootstrap() {
   await app.register(cors, buildcorsOption());
 
   // Register multipart support for file uploads
-  // This is useful for handling file uploads in your application
-  // You can configure the multipart options as needed
   // For example, you can set limits on file size, number of files, etc.
   await app.register(fastifyMultipart, buildMultipartOptions());
 

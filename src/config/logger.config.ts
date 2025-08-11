@@ -7,7 +7,6 @@ export function buildLoggerOptions(): Params {
   return {
     pinoHttp: {
       level: process.env.LOG_LEVEL ?? (dev ? 'debug' : 'info'),
-      // Serializadores para reducir ruido (solo campos clave)
       serializers: {
         req: (req: IncomingMessage) => ({
           id: req.id,
@@ -17,23 +16,22 @@ export function buildLoggerOptions(): Params {
         res: (res: ServerResponse) => ({ statusCode: res.statusCode }),
         err: (err: Error) => ({ type: err?.name, message: err?.message }),
       },
-      // Renombra claves para logs más breves
       customAttributeKeys: {
         responseTime: 'responseTime',
       },
-      // Mensajes compactos y legibles
       customReceivedMessage: (req) => `→ ${req.method} ${req.url}`,
       customSuccessMessage: (_req, res) => `← ${res.statusCode}`,
       customErrorMessage: (_req, res, err) =>
         `× ${res.statusCode} ${err?.message ?? ''}`,
-      // Correlación de request-id por solicitud
+      // generate a unique request ID if not provided
       genReqId: (req: IncomingMessage, res: ServerResponse) => {
         const hdr = req.headers['x-request-id'];
         const id = (Array.isArray(hdr) ? hdr[0] : hdr) ?? randomUUID();
         res.setHeader('x-request-id', id);
         return id;
       },
-      // Propiedades adicionales útiles y compactas en cada log
+      // Add custom properties to the log
+      // This can be useful for tracking requests
       customProps: (req: IncomingMessage & { id?: string }) => ({
         reqId: req.id,
       }),
@@ -42,7 +40,12 @@ export function buildLoggerOptions(): Params {
         ignore: (req: IncomingMessage) =>
           req.url?.startsWith('/health') === true,
       },
-      // Salida bonita en desarrollo
+
+      // Use pino-pretty in development for better readability
+      // In production, we use JSON format for structured logging
+      // This allows us to have human-readable logs in development
+      // and structured logs in production for better parsing and analysis
+      // Note: pino-pretty is not used in production to avoid performance overhead
       transport:
         process.env.NODE_ENV !== 'production'
           ? {
