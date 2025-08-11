@@ -1,18 +1,17 @@
+import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import fastifyMultipart from '@fastify/multipart';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ValidationPipe } from '@nestjs/common';
-import helmet from '@fastify/helmet';
-import cors from '@fastify/cors';
-import fastifyMultipart from '@fastify/multipart';
-import { buildcorsOption } from './config/cors.config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 import { getJsonBodyLimit } from './config/body.config';
+import { buildcorsOption } from './config/cors.config';
 import { buildMultipartOptions } from './config/multipart.config';
-import { SwaggerModule, DocumentBuilder} from '@nestjs/swagger';
-
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -20,7 +19,7 @@ async function bootstrap() {
     // Use FastifyAdapter for better performance
     // You can also pass options to FastifyAdapter if needed
     // For example, you can set a custom body limit
-    new FastifyAdapter({ logger: true, bodyLimit: getJsonBodyLimit() }),
+    new FastifyAdapter({ logger: false, bodyLimit: getJsonBodyLimit() }),
   );
 
   if (process.env.NODE_ENV !== 'production') {
@@ -34,9 +33,9 @@ async function bootstrap() {
       // .addBearerAuth() // si luego añades auth
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app as any, config);
 
-    SwaggerModule.setup('/docs', app, document, {
+    SwaggerModule.setup('/docs', app as any, document, {
       swaggerOptions: { persistAuthorization: true },
     });
   }
