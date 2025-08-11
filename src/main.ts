@@ -3,15 +3,12 @@ import helmet from '@fastify/helmet';
 import fastifyMultipart from '@fastify/multipart';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { getJsonBodyLimit } from './config/body.config';
-import { buildcorsOption } from './config/cors.config';
-import { buildMultipartOptions } from './config/multipart.config';
+import { getJsonBodyLimit } from './config/http/body.config';
+import { buildcorsOption } from './config/http/cors.config';
+import { buildMultipartOptions } from './config/http/multipart.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

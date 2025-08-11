@@ -6,9 +6,7 @@ function mb(n: number) {
 
 export function buildMultipartOptions(): FastifyMultipartOptions {
   const maxFileMb = Number(process.env.MULTIPART_MAX_FILE_SIZE_MB || '5');
-  const allowedMime = (
-    process.env.ACCEPTED_IMAGE_MIME_TYPES ?? 'image/jpeg,image/png,image/webp'
-  )
+  const allowedMime = (process.env.ACCEPTED_IMAGE_MIME_TYPES ?? 'image/jpeg,image/png,image/webp')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);

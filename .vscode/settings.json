@@ -4,7 +4,6 @@
   "material-icon-theme.files.associations": {
     "*.*.ts": "nestjs"
   },
-  "debug.node.autoAttach": "on",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {

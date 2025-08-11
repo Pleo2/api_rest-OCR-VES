@@ -21,8 +21,7 @@ export function buildLoggerOptions(): Params {
       },
       customReceivedMessage: (req) => `→ ${req.method} ${req.url}`,
       customSuccessMessage: (_req, res) => `← ${res.statusCode}`,
-      customErrorMessage: (_req, res, err) =>
-        `× ${res.statusCode} ${err?.message ?? ''}`,
+      customErrorMessage: (_req, res, err) => `× ${res.statusCode} ${err?.message ?? ''}`,
       // generate a unique request ID if not provided
       genReqId: (req: IncomingMessage, res: ServerResponse) => {
         const hdr = req.headers['x-request-id'];
@@ -37,8 +36,7 @@ export function buildLoggerOptions(): Params {
       }),
 
       autoLogging: {
-        ignore: (req: IncomingMessage) =>
-          req.url?.startsWith('/health') === true,
+        ignore: (req: IncomingMessage) => req.url?.startsWith('/health') === true,
       },
 
       // Use pino-pretty in development for better readability
