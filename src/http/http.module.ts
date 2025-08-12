@@ -11,7 +11,7 @@ import { ConfigType } from '@nestjs/config';
       inject: [ratesConfig.KEY],
       useFactory: (cfg: ConfigType<typeof ratesConfig>) =>
         buildAxios({
-          baseUrl: cfg.baseUrl,
+          baseUrl: new URL(cfg.baseUrl, cfg.baseUrl).toString(),
           timeoutMs: cfg.timeoutMs,
           userAgent: `ocr-ves-api/${process.env.npm_package_version ?? 'dev'}`,
         }),

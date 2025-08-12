@@ -3,7 +3,9 @@ import * as Joi from 'joi';
 export const envSchema = Joi.object({
   NODE_ENV: Joi.string().valid('development', 'production').required(),
   PORT: Joi.number().port().default(8080),
-  LOG_LEVEL: Joi.string().valid('debug', 'info', 'warn', 'error').default('info'),
+  LOG_LEVEL: Joi.string()
+    .valid('debug', 'info', 'warn', 'error')
+    .default('info'),
 
   /// OCR (Replicate)
   //   REPLICATE_API_TOKEN: Joi.string().when('NODE_ENV', { is: 'production', then: Joi.required(), otherwise: Joi.optional() }),
@@ -11,9 +13,10 @@ export const envSchema = Joi.object({
   //   REPLICATE_TIMEOUT_MS: Joi.number().min(1000).default(15000),
 
   // Tasas (pydolarve)
-  //   PYDOLARVE_BASE_URL: Joi.string().uri().default('https://pydolarve.org'),
-  //   PYDOLARVE_TIMEOUT_MS: Joi.number().min(1000).default(8000),
-  //   RATES_TTL_SECONDS: Joi.number().min(1).default(60),
+  PYDOLARVE_BASE_URL: Joi.string().uri().required(),
+  PYDOLARVE_TIMEOUT_MS: Joi.number().min(1000),
+  RATES_TTL_SECONDS: Joi.number().min(30),
+  RATES_ENDPOINT_API_VERSION: Joi.string(),
 
   // Caché
   //   CACHE_STORE: Joi.string().valid('memory','redis').default('memory'),
@@ -33,7 +36,9 @@ export const envSchema = Joi.object({
   MULTIPART_MAX_FILES: Joi.number().min(1).default(1),
   MULTIPART_MAX_FIELDS: Joi.number().min(0).default(10),
   MULTIPART_TOTAL_PARTS: Joi.number().min(1).default(20),
-  ACCEPTED_IMAGE_MIME_TYPES: Joi.string().default('image/jpeg,image/png,image/webp'),
+  ACCEPTED_IMAGE_MIME_TYPES: Joi.string().default(
+    'image/jpeg,image/png,image/webp',
+  ),
 
   // CSP/Docs
   CSP: Joi.string().valid('off').optional(),
